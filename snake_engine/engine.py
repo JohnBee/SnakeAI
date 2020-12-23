@@ -1,7 +1,8 @@
 from random import randint
 
+
 class Engine:
-    def __init__(self, world_width = 10, world_height = 10):
+    def __init__(self, world_width=10, world_height=10):
         '''
         Initialise the snake engine where all game operations will take place.
 
@@ -14,8 +15,75 @@ class Engine:
         self.food = []
 
         ## Initialise the snake
-        self.snake = Snake(world_width//2, world_height//2, 4)
-        self.add_food()
+        self.snake = Snake(world_width // 2, world_height // 2, 4)
+        self.score = 0
+        self.game_end = False
+
+    # def go_next_game_state(self, snake_input):
+    #     # update the snake direction
+    #     # input, 0 for left, 1 for right
+    #     if snake_input == 0:
+    #         self.snake.direction = snake_input
+    #     self.snake.move_forward(self.food)
+
+    def play_game(self):
+        # draw game state
+        while not self.game_end:
+            if not self.food:
+                self.add_food()
+
+            self.pretty_print_world()
+            move = None
+            while move is None:
+                move = int(input("Enter 0 or 1 or 2 for no change, turn left or turn right: "))
+                print(move)
+                if move == 0:
+                    self.snake.move_forward(self)
+                elif move == 1:
+                    self.snake.turn_left(self)
+                elif move == 2:
+                    self.snake.turn_right(self)
+                else:
+                    print(f"Invalid move: {move}")
+                    move = None
+
+            print(self.food)
+
+    def export_game_state(self):
+        '''
+        Exports the game state
+        :return: a dictionary with set values representing the game state
+        '''
+        return {"score": self.score,
+                "world_width": self.world_width,
+                "world_height": self.world_height,
+                "food": self.food,
+                "snake_direction": self.snake.direction,
+                "snake_body": self.snake.body,
+                "snake_head": self.snake.head,
+                "snake_size": self.snake.length}
+
+    def import_game_state(self, game_state):
+        '''
+        Import a game state to load
+        :param game_state: a dictionary with the defined
+        :return: True or false depending on if it was successful in loading the game state
+        '''
+        try:
+            self.score = game_state["score"]
+            self.world_width = game_state["world_width"]
+            self.world_height = game_state["world_height"]
+            self.food = game_state["food"]
+            self.snake.body = game_state["snake_body"]
+            self.snake.head = game_state["snake_head"]
+            self.snake.direction = game_state["snake_direction"]
+            self.snake.length = game_state["snake_length"]
+
+        except KeyError as error:
+            print("Missing game state argument!")
+            print(e)
+            return False
+        return True
 
     def add_food(self):
         '''
@@ -31,7 +99,7 @@ class Engine:
             return False
         else:
             # select a possible location
-            self.food.append(possible_locations[randint(0, len(possible_locations)-1)])
+            self.food.append(possible_locations[randint(0, len(possible_locations) - 1)])
             return True
 
     def output_world(self):
@@ -48,7 +116,7 @@ class Engine:
                 elif (x, y) in self.food:
                     out[-1].append("o")
                 elif (x, y) in self.snake.body:
-                    if(x, y) == self.snake.body[-1]:
+                    if (x, y) == self.snake.body[0]:
                         if self.snake.direction == 0:
                             out[-1].append(">")
                         if self.snake.direction == 1:
@@ -62,24 +130,57 @@ class Engine:
         return out
 
     def pretty_print_world(self):
-
         for y in self.output_world():
             print(" ".join(y))
-
 
 
 class Snake:
     def __init__(self, pos_x=0, pos_y=0, length=3):
         # init tail of given length
-        self.head = [(pos_x, pos_y)]
-        self.direction = 0 # 0 = right, 1 = up, 2 = left, 3 = down
-        self.body = self.gen_tail(pos_x, pos_y, length) + self.head
+        self.head = (pos_x, pos_y)
+        self.direction = 0  # 0 = right, 1 = up, 2 = left, 3 = down
+        self.length = length
+        self.body = self.gen_tail(pos_x, pos_y, self.length)
+        print(self.body)
+
+    def turn_left(self, engine):
+        self.direction = (self.direction + 1) % 4
+        self.move_forward(engine)
+
+    def turn_right(self, engine):
+        self.direction = (self.direction - 1) % 4
+        self.move_forward(engine)
+
+    def move_forward(self, engine):
+        if self.direction == 0:
+            self.body = [(self.head[0] + 1, self.head[1])] + self.body
+        elif self.direction == 1:
+            self.body = [(self.head[0], self.head[1] - 1)] + self.body
+        elif self.direction == 2:
+            self.body = [(self.head[0] - 1, self.head[1])] + self.body
+        elif self.direction == 3:
+            self.body = [(self.head[0], self.head[1] + 1)] + self.body
+
+        # check if head not on food then don't increase snake length
+        if self.body[0] not in engine.food:
+            self.body.pop()
+        else:
+            # eat the food
+            engine.food.remove(self.body[0])
+            engine.score += 1
+        self.head = self.body[0]
+
+        # check if dead
+        if len([a for a in self.body if a == self.head]) > 1:
+            engine.game_end = True
+        if self.head[1] < 0 or self.head[0] < 0 or self.head[0] >= engine.world_width or self.head[1] >= engine.world_height:
+            engine.game_end = True
 
     @staticmethod
     def gen_tail(head_x, head_y, length=3):
-        return [(x, head_y) for x in range(head_x, head_x-length, -1)]
+        return [(x, head_y) for x in range(head_x, head_x - length, -1)]
 
 
 if __name__ == "__main__":
     e = Engine()
-    e.pretty_print_world()
+    e.play_game()
