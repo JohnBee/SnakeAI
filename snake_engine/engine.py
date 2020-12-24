@@ -19,35 +19,19 @@ class Engine:
         self.score = 0
         self.game_end = False
 
-    # def go_next_game_state(self, snake_input):
-    #     # update the snake direction
-    #     # input, 0 for left, 1 for right
-    #     if snake_input == 0:
-    #         self.snake.direction = snake_input
-    #     self.snake.move_forward(self.food)
+        # place the first piece of food
+        self.add_food()
 
-    def play_game(self):
-        # draw game state
-        while not self.game_end:
-            if not self.food:
-                self.add_food()
-
-            self.pretty_print_world()
-            move = None
-            while move is None:
-                move = int(input("Enter 0 or 1 or 2 for no change, turn left or turn right: "))
-                print(move)
-                if move == 0:
-                    self.snake.move_forward(self)
-                elif move == 1:
-                    self.snake.turn_left(self)
-                elif move == 2:
-                    self.snake.turn_right(self)
-                else:
-                    print(f"Invalid move: {move}")
-                    move = None
-
-            print(self.food)
+    def make_move(self, input_move):
+        if input_move == 0:
+            self.snake.move_forward(self)
+        elif input_move == 1:
+            self.snake.turn_left(self)
+        elif input_move == 2:
+            self.snake.turn_right(self)
+        # add food if it's been eaten
+        if not self.food:
+            self.add_food()
 
     def export_game_state(self):
         '''
@@ -181,6 +165,20 @@ class Snake:
         return [(x, head_y) for x in range(head_x, head_x - length, -1)]
 
 
-if __name__ == "__main__":
+def play_game():
     e = Engine()
-    e.play_game()
+    # draw game state
+    while not e.game_end:
+
+        e.pretty_print_world()
+        move = None
+        while move is None:
+            move = int(input("Enter 0 or 1 or 2 for no change, turn left or turn right: "))
+            if move in [0,1,2]:
+                e.make_move(move)
+            else:
+                print(f"Invalid move: {move}")
+                move = None
+
+if __name__ == "__main__":
+    play_game()
