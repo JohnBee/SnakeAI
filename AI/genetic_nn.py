@@ -58,8 +58,13 @@ class SimpleNN:
             inp = n_inps
         return inp
 
+    @staticmethod
+    def argmax(layer):
+        max_val = max(layer)
+        return [0 if x != max_val else 1 for x in layer]
 
 if __name__ == "__main__":
     n = SimpleNN([2, 1, 2, 2])
     out = n.forward_propagate([1, 0])
+    a_max = SimpleNN.argmax(out)
     pass
