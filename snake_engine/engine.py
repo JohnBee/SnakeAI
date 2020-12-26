@@ -169,7 +169,6 @@ def play_game():
     e = Engine()
     # draw game state
     while not e.game_end:
-
         e.pretty_print_world()
         move = None
         while move is None:

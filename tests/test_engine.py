@@ -32,6 +32,7 @@ class TestSnake(TestCase):
         s.turn_right()
         self.assertEqual(s.direction, 0)
 
+
 class TestEngine(TestCase):
     def test_add_food(self):
         e = Engine()
