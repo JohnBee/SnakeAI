@@ -22,16 +22,49 @@ class Engine:
         # place the first piece of food
         self.add_food()
 
+    def reset(self):
+        self.food = []
+
+        ## Initialise the snake
+        self.snake = Snake(self.world_width // 2, self.world_height // 2, 4)
+        self.score = 0
+        self.game_end = False
+
+        # place the first piece of food
+        self.add_food()
+
     def make_move(self, input_move):
+        old_head = (self.snake.head[0], self.snake.head[1])
+
         if input_move == 0:
             self.snake.move_forward(self)
         elif input_move == 1:
             self.snake.turn_left(self)
         elif input_move == 2:
             self.snake.turn_right(self)
+
         # add food if it's been eaten
+        reward = 0
         if not self.food:
-            self.add_food()
+            self.score += 1
+            reward += 10
+            if not self.add_food():
+                self.game_end
+
+        # return reward for making this move
+        # if closer to food, increase reward, else decrease
+        new_head = (self.snake.head[0], self.snake.head[1])
+        food = (self.food[0][0], self.food[0][1])
+        # taxicab geometry
+        old_dist = abs(food[0] - old_head[0]) + abs(food[1] - old_head[1])
+        new_dist = abs(food[0] - new_head[0]) + abs(food[1] - new_head[1])
+
+        if new_dist < old_dist:
+            reward += 1
+        else:
+            reward -= 1
+
+        return reward
 
     def export_game_state(self):
         '''
@@ -45,7 +78,8 @@ class Engine:
                 "snake_direction": self.snake.direction,
                 "snake_body": self.snake.body,
                 "snake_head": self.snake.head,
-                "snake_size": self.snake.length}
+                "snake_size": self.snake.length,
+                "game_end": self.game_end}
 
     def import_game_state(self, game_state):
         '''
@@ -62,10 +96,11 @@ class Engine:
             self.snake.head = game_state["snake_head"]
             self.snake.direction = game_state["snake_direction"]
             self.snake.length = game_state["snake_length"]
+            self.game_end = game_state["game_end"]
 
         except KeyError as error:
             print("Missing game state argument!")
-            print(e)
+            print(error)
             return False
         return True
 
@@ -125,7 +160,6 @@ class Snake:
         self.direction = 0  # 0 = right, 1 = up, 2 = left, 3 = down
         self.length = length
         self.body = self.gen_tail(pos_x, pos_y, self.length)
-        print(self.body)
 
     def turn_left(self, engine):
         self.direction = (self.direction + 1) % 4

@@ -1,4 +1,4 @@
-`# Uses Genetic Algorithms to adjust the weights of a NN to play Snake
+# Uses Genetic Algorithms to adjust the weights of a NN to play Snake
 # NN inputs:
 # Clear Forward
 # Clear Left
@@ -75,7 +75,7 @@ def get_sensors(game):
     body = game.snake.body
     food = game.food
     # 0 right (1, 0), 1 up (0, 1), 2 left (-1, 0), 3 down (0, -1)
-    check_spaces = [(1,0), (0, 1), (-1, 0), (0, -1)]
+    check_spaces = [(1, 0), (0, -1), (-1, 0), (0, 1)]
 
     out = {"clear_left": True, "clear_right": True, "clear_forward": True, "food_left": False, "food_right": False, "food_forward": False}
 
@@ -85,7 +85,6 @@ def get_sensors(game):
     forward = (head[0] + check_spaces[direction][0], head[1] + check_spaces[direction][1])
     left = (head[0] + check_spaces[direction+1 % 4][0], head[1] + check_spaces[direction+1 % 4][1])
     right = (head[0] + check_spaces[direction-1 % 4][0], head[1] + check_spaces[direction-1 % 4][1])
-
 
     if forward in body or forward[0] < 0 or forward[0] > 9 or forward[1] < 0 or forward[1] > 9:
         out["clear_forward"] = False
@@ -144,4 +143,3 @@ if __name__ == "__main__":
     out = n.forward_propagate([1, 0])
     a_max = SimpleNN.argmax(out)
     pass
-`
