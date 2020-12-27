@@ -137,10 +137,12 @@ class QLearning:
     def export_q_table(self):
         with open("q_table.json", 'w') as f:
             js = json.dump(self.qtable, f)
+        print("exporting table")
 
     def load_q_table(self):
         with open("q_table.json", "r") as f:
             self.qtable = json.load(f)
+        print("loading table")
 
 if __name__ == "__main__":
     e = Engine()

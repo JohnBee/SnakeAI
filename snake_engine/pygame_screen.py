@@ -58,5 +58,4 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode([500, 500])
     scc = snake_screen_controller(screen, False, 100000)
     scc.main_event_loop()
-    print("exporting table")
     #pygame.quit()
