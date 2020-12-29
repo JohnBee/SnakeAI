@@ -21,7 +21,6 @@ class QLearning:
         self.initialise_q_table()
 
     def initialise_q_table(self):
-        # 6 bits so 64 states
         x = ["0", "1"]
         food_dir = ["0","1","2"]
         dir = ["0","1","2","3"]
