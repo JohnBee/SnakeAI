@@ -25,12 +25,12 @@ This provides a total of 288 possible states. The addition of extra states cause
 
 ## Running SnakeAI
 Running the existing provided Q-Table.
-```
-$ python SnakeAI.py
+```shell script
+$ python snakeAI.py
 ```
 Overriding the existing Q-Table with new values and no gameplay display.
-```
-$ python SnakeAI.py --learn 100000 --no-display
+```shell script
+$ python snakeAI.py --learn 100000 --no-display
 ```
 ## Demo
 ![snake_ai](demo/snake_1.gif)
