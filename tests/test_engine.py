@@ -9,27 +9,29 @@ class TestSnake(TestCase):
         self.assertEqual(len(t_tail), 10, "snake tail correct length")
 
     def test_turn_left(self):
+        e = Engine()
         s = Snake()
         self.assertEqual(s.direction, 0)
-        s.turn_left()
+        s.turn_left(e)
         self.assertEqual(s.direction, 1)
-        s.turn_left()
+        s.turn_left(e)
         self.assertEqual(s.direction, 2)
-        s.turn_left()
+        s.turn_left(e)
         self.assertEqual(s.direction, 3)
-        s.turn_left()
+        s.turn_left(e)
         self.assertEqual(s.direction, 0)
 
     def test_turn_right(self):
+        e = Engine()
         s = Snake()
         self.assertEqual(s.direction, 0)
-        s.turn_right()
+        s.turn_right(e)
         self.assertEqual(s.direction, 3)
-        s.turn_right()
+        s.turn_right(e)
         self.assertEqual(s.direction, 2)
-        s.turn_right()
+        s.turn_right(e)
         self.assertEqual(s.direction, 1)
-        s.turn_right()
+        s.turn_right(e)
         self.assertEqual(s.direction, 0)
 
 
