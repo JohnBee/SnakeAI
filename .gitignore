@@ -1,4 +1,2 @@
 .idea
 *.pyc
-snake_engine/__pycache__/engine.cpython-37.pyc
-*.pyc
