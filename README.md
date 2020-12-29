@@ -16,6 +16,9 @@ Left, Right, or Inline
 
 Danger:
 Ahead, Left, or Right
+
+Snake:
+Facing Direction
 ```
 A limit number of moves:
 ```
