@@ -1,6 +1,6 @@
 import pygame
-from SnakeAi.snake_engine.engine import Engine
-from SnakeAi.AI.q_learning import QLearning
+from snake_engine.engine import Engine
+from AI.q_learning import QLearning
 import sys
 
 
@@ -28,11 +28,11 @@ class snake_screen_controller:
                     # 100 -> 255
                     scale = 155/len(self.e.snake.body)
                     col = i*scale
-                    pygame.draw.rect(screen, (0, 255-col, 0),(x*50, y*50, 50, 50))
+                    pygame.draw.rect(self.screen, (0, 255-col, 0),(x*50, y*50, 50, 50))
                 if (x, y) in self.e.food:
-                    pygame.draw.rect(screen, (255, 0, 0), (x * 50, y * 50, 50, 50))
+                    pygame.draw.rect(self.screen, (255, 0, 0), (x * 50, y * 50, 50, 50))
                 if (x,y) == self.e.snake.head:
-                    pygame.draw.rect(screen, (00, 255, 00), (x * 50, y * 50, 50, 50))
+                    pygame.draw.rect(self.screen, (00, 255, 00), (x * 50, y * 50, 50, 50))
 
         pygame.display.flip()
 
@@ -53,9 +53,10 @@ class snake_screen_controller:
 
             clock.tick(10)
 
-if __name__ == "__main__":
+
+def run_display(episodes=10000, learn=False):
     pygame.init()
     screen = pygame.display.set_mode([500, 500])
-    scc = snake_screen_controller(screen, False, 100000)
+    scc = snake_screen_controller(screen, learn, episodes)
     scc.main_event_loop()
     #pygame.quit()

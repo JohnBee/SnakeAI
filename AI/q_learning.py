@@ -1,6 +1,10 @@
 from random import uniform, randint
-from SnakeAi.snake_engine.engine import Engine
+from snake_engine.engine import Engine
 import json
+from pathlib import Path
+
+q_table_path = Path("AI/q_table.json")
+
 
 def argmax(in_list):
     max_val = max(in_list)
@@ -88,10 +92,7 @@ class QLearning:
         for episode in range(self.learning_epochs):
             self.e.reset()
             state, game_over = self.get_state_str()
-            max_steps = 100
-            steps = 0
-            while (not game_over) and steps < max_steps:
-                steps +=1
+            while not game_over:
                 if uniform(0, 1) <= greedy_policy_epsilon:
                     # explore
                     action = randint(0, 2)  # 0 go forward, 1 turn left, 2 turn right
@@ -121,8 +122,6 @@ class QLearning:
         action = argmax(self.qtable[state])
         reward = self.e.make_move(action)
         next_state, game_over = self.get_state_str()
-        print(next_state)
-        print(self.qtable[next_state])
         state = next_state
         return state, game_over
 
@@ -130,24 +129,26 @@ class QLearning:
         self.e.reset()
         state, game_over = self.get_state_str()
         self.e.pretty_print_world()
-        print(self.qtable[state])
-        print(state)
         while not game_over:
             state, game_over = self.q_step_snake()
             self.e.pretty_print_world()
 
     def export_q_table(self):
-        with open("q_table.json", 'w') as f:
+        with open(q_table_path, 'w') as f:
             js = json.dump(self.qtable, f)
         print("exporting table")
 
     def load_q_table(self):
-        with open("q_table.json", "r") as f:
+        with open(q_table_path, "r") as f:
             self.qtable = json.load(f)
         print("loading table")
 
-if __name__ == "__main__":
+
+def run_q_learn(episodes, learn):
     e = Engine()
-    q = QLearning(e)
-    q.q_learn_loop()
-    q.q_play_snake()
+    q = QLearning(e, epochs=episodes)
+    if learn:
+        q.q_learn_loop()
+        q.export_q_table()
+    else:
+        q.load_q_table()
