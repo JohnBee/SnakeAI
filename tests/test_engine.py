@@ -1,5 +1,5 @@
 from unittest import TestCase
-from SnakeAi.snake_engine.engine import Engine, Snake
+from snake_engine.engine import Engine, Snake
 
 
 class TestSnake(TestCase):
