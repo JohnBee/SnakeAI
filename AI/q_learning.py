@@ -88,8 +88,10 @@ class QLearning:
         for episode in range(self.learning_epochs):
             self.e.reset()
             state, game_over = self.get_state_str()
-
-            while not game_over:
+            max_steps = 100
+            steps = 0
+            while (not game_over) and steps < max_steps:
+                steps +=1
                 if uniform(0, 1) <= greedy_policy_epsilon:
                     # explore
                     action = randint(0, 2)  # 0 go forward, 1 turn left, 2 turn right
@@ -103,7 +105,7 @@ class QLearning:
                     reward = -10
 
                 old_qval = self.qtable[state][action]
-                max_qreward = max(self.qtable[state])
+                max_qreward = max(self.qtable[next_state])
 
                 new_qval = (1-learning_rate_alpha) * old_qval + learning_rate_alpha * (reward + discount_factor_gamma * max_qreward)
                 self.qtable[state][action] = new_qval
