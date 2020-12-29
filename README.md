@@ -1,4 +1,5 @@
 # SnakeAI
+Version: Python 3.7
 
 AI to simlulate and play the game snake in attempt achieve maximum score.
 
